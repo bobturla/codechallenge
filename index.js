@@ -9,6 +9,7 @@ app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(main.handleInvalidJson);
+app.disable('x-powered-by');
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
