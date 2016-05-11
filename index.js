@@ -19,9 +19,12 @@ app.get('/', function(request, response) {
 });
 
 app.post('/', (request, response) => {
-    main.processRequest(request.body.payload)
+    main.processRequest(request.body)
         .then((result) => response.json(result))
-        .catch((error) => response.json(error));
+        .catch((error) => {
+        	response.status(400);
+        	response.json(error);
+        });
 });
 
 app.listen(app.get('port'), function() {

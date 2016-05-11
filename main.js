@@ -1,31 +1,39 @@
 'use strict'
+const ERROR_RESPONSE = { error: "Could not decode request: JSON parsing failed" };
+
 exports.handleInvalidJson = (error, req, res, next) => {
-    res.json({ error: "Could not decode request: JSON parsing failed" });
+    res.status(400);
+    res.json(ERROR_RESPONSE);
 }
 
-exports.processRequest = (payload) => {
+exports.processRequest = ({ payload }) => {
     let results = [];
     return new Promise((resolve, reject) => {
-        try {
-            payload.map((show) => {
-                if (isDrmAndAtLeastOneEp(show)) {
-                    results.push((extractImgSlugTitle(show)));
-                }
-            });
-            resolve({ response: results });
-        }catch(error){
-        	reject({ error: "Could not decode request: JSON parsing failed" });
-        }
+        payload.map((show) => {
+            if (isDrmAndAtLeastOneEp(show)) {
+                let extracted = extractImgSlugTitle(show);
+                if (extracted !== null) results.push(extracted);
+            }
+        });
+        resolve({ response: results });
     })
 }
 
 function isDrmAndAtLeastOneEp(show) {
-    if (show.drm === true && show.episodeCount > 0)
-        return true
-    else
-        return false
+    if (show.drm && show.episodeCount > 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 function extractImgSlugTitle(show) {
-    return { image: show.image.showImage, slug: show.slug, title: show.title };
+    if (show.hasOwnProperty('image') && show.hasOwnProperty('slug') && show.hasOwnProperty('title'))
+        return { image: show.image.showImage, slug: show.slug, title: show.title };
+    else {
+        return null;
+    }
 }
+
+exports.isDrmAndAtLeastOneEp = isDrmAndAtLeastOneEp;
+exports.extractImgSlugTitle = extractImgSlugTitle;
