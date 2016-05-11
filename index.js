@@ -10,18 +10,18 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(main.handleInvalidJson);
 
-// // views is directory for all template files
-// app.set('views', __dirname + '/views');
-// app.set('view engine', 'ejs');
+// views is directory for all template files
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 
-// app.get('/', function(request, response) {
-//     response.render('pages/index');
-// });
+app.get('/', function(request, response) {
+    response.render('pages/index');
+});
 
 app.post('/', (request, response) => {
     main.processRequest(request.body.payload)
-        .then((result) => response.json	(result))
-        .catch(console.error);
+        .then((result) => response.json(result))
+        .catch((error) => response.json(error));
 });
 
 app.listen(app.get('port'), function() {
