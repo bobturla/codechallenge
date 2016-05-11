@@ -1,5 +1,6 @@
-var express = require('express');
-var app = express();
+'use strict'
+let express = require('express');
+let app = express();
 
 app.set('port', (process.env.PORT || 5000));
 
